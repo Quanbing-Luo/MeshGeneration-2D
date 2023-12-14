@@ -1,0 +1,4 @@
+Hmax: 0.12
+Hgrad: 1.1
+Hvertex: 0
+Hedge: 0
