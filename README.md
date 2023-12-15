@@ -11,7 +11,7 @@ There are some notes before using the MATLAB mesh generator.
 
 * Please read the examples in the **"Examples"** folder before using the MATLAB mesh generator to generate your own meshes, examples are written with MATLAB Live Scripts.   
 
-* The MATLAB mesh generator have successfully tested at **MATLAB R2023b** on Windows 11, the author cannot promise you can run successfully at other environment. 
+* The MATLAB mesh generator have successfully tested at **MATLAB R2023b** on Windows 11, the mesh generator might not run successfully at other environments. 
 
 * The core source code is written in C++, your compiler must support **C++23** if you need to recompile the C++ source code (**meshgeneration.cpp**) for some reasons. 
 
@@ -38,7 +38,7 @@ The four name-value arguments used for `meshgeneration` function are described a
 	
 *	**Hvertex**: The `Hvertex` is maximum diameter of node bubbles used for mesh generation at  selected nodes/vertices. 
 	
-*	**Hedge**:  The `Hedge` is maximum diameter of node bubbles used for mesh generation at selected edges.  
+*	**Hedge**:  The `Hedge` is maximum diameter of node bubbles used for mesh generation at selected boundary edges.  
 	
 *	**Hgrad**: The 	`Hgrad` is mesh growth rate (gradient), mesh growth rate was specified as a number greater than 1 and less than or equal to 2. The default value of `Hgrad` is set as 1.1 (rather than 1.5 in the `generateMesh` function) for higher-quality mesh. Here, the value of `Hgrad` should not be set as 1 as it might bring some side effects. If even-distributed mesh elements are required globally, please change the value of `Hmax` preferentially rather than decrease the value of `Hgrad`. 	
 	
