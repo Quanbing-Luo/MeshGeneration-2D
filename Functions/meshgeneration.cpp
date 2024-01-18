@@ -484,7 +484,7 @@ private:
             [](Node& node) { node.isInitial = true; });
 
         //const double RATIO{ std::sqrt(GRAD) };
-        const double RATIO{ 1.1 };
+        constexpr double RATIO{ 1.2 };
         for (const auto& [edge, para] : edgeparas) {
             const auto& [a, b] {edge};  Node& nodea{ nodes.at(a) }; Node& nodeb{ nodes.at(b) };
             const double xa{ nodea.x }; const double ya{ nodea.y }; const double ra{ nodea.r };
@@ -586,14 +586,14 @@ private:
                             if (isRequiredNewCavityElement(edge, c, nn, nodes, edge_exterior_table)) {
                                 ne_cavity_table.insert(ne);
                                 edge_exterior_table.erase(edge);
-                                const Edge edge_ac{ a,c };
+                                Edge edge_ac{ a,c };
                                 const auto [itedge_ac, isInserted_ac] = edge_exterior_table.insert(edge_ac);
                                 if (isInserted_ac)
                                     edge_exterior_list.push_back(std::move(edge_ac));
                                 else
                                     edge_exterior_table.erase(itedge_ac);
 
-                                const Edge edge_bc{ b,c };
+                                Edge edge_bc{ b,c };
                                 const auto [itedge_bc, isInserted_bc] = edge_exterior_table.insert(edge_bc);
                                 if (isInserted_bc)
                                     edge_exterior_list.push_back(std::move(edge_bc));
@@ -888,8 +888,8 @@ private:
 
         std::for_each(std::execution::par_unseq, js.begin(), js.end(),
             [&](const std::size_t j) { const Edge edge{ i, j }; auto& para = edgeparas.at(edge);
-        const Node& nodea{ nodes.at(edge.a) }; const Node& nodeb{ nodes.at(edge.b) };
-        para.rl = std::hypot(nodeb.x - nodea.x, nodeb.y - nodea.y) / (nodea.r + nodeb.r);
+                const Node& nodea{ nodes.at(edge.a) }; const Node& nodeb{ nodes.at(edge.b) };
+                para.rl = std::hypot(nodeb.x - nodea.x, nodeb.y - nodea.y) / (nodea.r + nodeb.r);
             });
 
         //writeMeshRadii(nodes, elements, "meshradii.dat");
@@ -1004,10 +1004,10 @@ private:
     void updateRelativeLengthOfEdges(const Nodes& nodes, EdgeParas& edgeparas) noexcept {
         std::for_each(std::execution::par_unseq, edgeparas.begin(), edgeparas.end(),
             [&](auto& edgepara) { auto& [edge, para] = edgepara;
-        if (para.isFull) {
-            const Node& nodea{ nodes.at(edge.a) }; const Node& nodeb{ nodes.at(edge.b) };
-            para.rl = std::hypot(nodeb.x - nodea.x, nodeb.y - nodea.y) / (nodea.r + nodeb.r);
-        }
+                if (para.isFull) {
+                    const Node& nodea{ nodes.at(edge.a) }; const Node& nodeb{ nodes.at(edge.b) };
+                    para.rl = std::hypot(nodeb.x - nodea.x, nodeb.y - nodea.y) / (nodea.r + nodeb.r);
+                }
             });
     }
 
@@ -1016,10 +1016,9 @@ private:
         updateRelativeLengthOfEdges(nodes, edgeparas);
 
         auto start = std::chrono::steady_clock::now();
-        for (std::size_t ii = 0; ; ii++) {
+        while (true) {
             auto itedgeparamax = std::max_element(std::execution::par_unseq,
-                edgeparas.begin(), edgeparas.end(),
-                [](const auto& edgepara_a, const auto& edgepara_b)
+                edgeparas.begin(), edgeparas.end(),  [](const auto& edgepara_a, const auto& edgepara_b)
                 { return edgepara_a.second.rl < edgepara_b.second.rl; });
             const Edge& edgemax = itedgeparamax->first;   const Para& paramax = itedgeparamax->second;
             const double rlmax = paramax.rl;
@@ -1057,20 +1056,40 @@ private:
         }
 
         //writeMeshRadii(nodes, elements, "meshradii.dat");
+        
+        for (std::size_t count = 0; count < 10; count++) {
+            for (std::size_t ii = 0; ii < 3; ii++) {
+                for (std::size_t i = 0; i < 10; i++) {
+                    updatePositionsOfInsertedInteriorNodeBubbles(nodes, edgeparas, 1.2);
+                    //writeMeshRadii(nodes, elements, "meshradii.dat");
 
-        for (std::size_t ii = 0; ii < 30; ii++) {
-            for (std::size_t i = 0; i < 10; i++) {
-                updatePositionsOfInsertedInteriorNodeBubbles(nodes, edgeparas, 1.2);
-                //writeMeshRadii(nodes, elements, "meshradii.dat");
-
-                updateMeshConnections(edgeparas, elements, nodes);
+                    updateMeshConnections(edgeparas, elements, nodes);
+                    //writeMeshRadii(nodes, elements, "meshradii.dat"); 
+                }
+                updateRadiiOfInteriorNodeBubbles(nodes, elements, edgeparas, GRAD, RMAX);
                 //writeMeshRadii(nodes, elements, "meshradii.dat");
             }
+            updateRelativeLengthOfEdges(nodes, edgeparas);
+            //writeMeshRadii(nodes, elements, "meshradii.dat");
 
-            //writeMeshRadii(nodes, elements, "meshradii.dat");
-            updateRadiiOfInteriorNodeBubbles(nodes, elements, edgeparas, GRAD, RMAX);
-            //writeMeshRadii(nodes, elements, "meshradii.dat");
-        }
+            auto itedgeparamax = std::max_element(std::execution::par_unseq,
+                edgeparas.begin(), edgeparas.end(),  [](const auto& edgepara_a, const auto& edgepara_b)
+                { return edgepara_a.second.rl < edgepara_b.second.rl; });
+            const Edge& edgemax = itedgeparamax->first;   const Para& paramax = itedgeparamax->second;
+            const double rlmax = paramax.rl;
+            if (rlmax > 1.4 && paramax.isFull) {
+                count = 0;
+                insertNodeAtMiddleEdge(nodes, elements, edgeparas, edgemax, paramax, GRAD, RMAX);
+                //writeMeshRadii(nodes, elements, "meshradii.dat");                
+            }
+
+            const auto end = std::chrono::steady_clock::now();
+            const std::chrono::duration<double> elapsed_seconds = end - start;
+            if (elapsed_seconds.count() > 15.0) {
+                std::cout << "Iteration in progress, number of current nodes: " << nodes.size() << '\n';
+                start = std::chrono::steady_clock::now();
+            }
+        }   
     }
 
 public:
@@ -1131,10 +1150,10 @@ public:
         resetRadiiOfBoundaryNodeBubblesAccordingToBoundaryEdgeLength(nodes, elements, edgeparas, GRAD);
         //writeMeshRadii(nodes, elements, "meshradii.dat");
 
-        updateRadiiOfBoundaryNodeBubblesAroundNarrowRegions(nodes, boundaries, edgeparas, GRAD);
+        //updateRadiiOfBoundaryNodeBubblesAroundNarrowRegions(nodes, boundaries, edgeparas, GRAD);
         //writeMeshRadii(nodes, elements, "meshradii.dat");
 
-        updateRadiiOfBoundaryNodeBubblesAccordingToGradient(nodes, elements, edgeparas, GRAD);        
+        //updateRadiiOfBoundaryNodeBubblesAccordingToGradient(nodes, elements, edgeparas, GRAD);        
         //writeMeshRadii(nodes, elements, "meshradii.dat");
 
         //Step 2: Mesh Generation for Interior Regions 
