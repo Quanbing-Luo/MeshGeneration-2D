@@ -572,7 +572,7 @@ private:
 
                 std::list<Edge> edge_exterior_list(std::from_range, edge_exterior_table);
                 while (edge_exterior_list.size() > 0) {
-                    auto itedge = edge_exterior_list.begin();
+                    const auto itedge = edge_exterior_list.begin();
                     const Edge edge = *itedge;
                     edge_exterior_list.erase(itedge);
                     if (edge_exterior_table.contains(edge)) {
@@ -1047,7 +1047,7 @@ private:
                 const auto end = std::chrono::steady_clock::now();
                 const std::chrono::duration<double> elapsed_seconds = end - start;
                 if (elapsed_seconds.count() > 15.0) {
-                    std::cout << "Iteration in progress, number of current nodes: " << nodes.size() << '\n';
+                    std::cout << "Iteration in progress, number of current nodes: " << nodes.size() << std::endl; 
                     start = std::chrono::steady_clock::now();
                 }
             }
@@ -1086,7 +1086,7 @@ private:
             const auto end = std::chrono::steady_clock::now();
             const std::chrono::duration<double> elapsed_seconds = end - start;
             if (elapsed_seconds.count() > 15.0) {
-                std::cout << "Iteration in progress, number of current nodes: " << nodes.size() << '\n';
+                std::cout << "Iteration in progress, number of current nodes: " << nodes.size() << std::endl; 
                 start = std::chrono::steady_clock::now();
             }
         }   
