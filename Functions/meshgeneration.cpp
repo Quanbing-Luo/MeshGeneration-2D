@@ -1102,15 +1102,15 @@ public:
         readGeometry(geofile, nodes, elements, boundaries);
         //writeMeshRadii(nodes, elements, "meshradii.dat");
 
-        updateMeshConnections(edgeparas, elements, nodes);
-        //writeMeshRadii(nodes, elements, "meshradii.dat");
-
         double RMAX{ 0.0 }; double GRAD{ 0.0 };
         UnsignedDoubles nnrs;  UnsignedDoubles nbrs;
 
         readMeshFeature(meshfeaturefile, RMAX, GRAD, nnrs, nbrs);
 
         initializeMeshParameters(nodes, boundaries, edgeparas, elements, RMAX, nnrs, nbrs);
+        //writeMeshRadii(nodes, elements, "meshradii.dat");
+
+        updateMeshConnections(edgeparas, elements, nodes);
         //writeMeshRadii(nodes, elements, "meshradii.dat");
 
         //Step 1: Refinement of Mesh Boundaries

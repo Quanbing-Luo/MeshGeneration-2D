@@ -13,7 +13,7 @@ There are some notes before using the MATLAB mesh generator.
 
 * The MATLAB mesh generator have successfully tested at **MATLAB R2023b** on Windows 11, the mesh generator might not run successfully at other environments. 
 
-* The core source code is written in C++, your compiler must support **C++23** if you need to recompile the C++ source code (**meshgeneration.cpp**) for some reasons. 
+* The core source code are written in C++, your compiler must support **C++23** if you need to recompile the C++ source code (**meshgeneration.cpp**) for some reasons. 
 
 
 In the "Functions" folder, the `meshgeneration` function of the MATLAB mesh generator is written in  **meshgeneration.m** file. The real core source code is written in C++ (**meshgeneration.cpp**), a console application (**meshgeneration.exe**) was obtained by compile the source code. Meanwhile, **geometryread.m**, **geometrywrite.m**, **meshradiiread.m**, and **meshradiiread.m** are provided to read and write binary geometry and mesh files.   
