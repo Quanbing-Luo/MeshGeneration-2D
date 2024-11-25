@@ -9,7 +9,7 @@ There are some notes before using the MATLAB mesh generator.
 
 * Please open (and run) **startup.m** to add **"Functions"** folder to the MATLAB Search Path at Startup before using the MATLAB mesh generator. 
 
-* Please read the examples in the **"Examples"** folder before using the MATLAB mesh generator to generate your own meshes, examples are written with MATLAB Live Scripts.   
+* Please read the examples in the **"Examples"** folder before using the MATLAB mesh generator to generate your own meshes.   
 
 * The MATLAB mesh generator have successfully tested at **MATLAB R2023b** on Windows 11, the mesh generator might not run successfully at other environments. 
 
