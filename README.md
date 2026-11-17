@@ -1,7 +1,6 @@
 # MeshGeneration-2D
 This repository includes the source code, program, and other materials for the following  paper: 
-*  Quanbing Luo; Hua Li, A mesh generator for two-dimensional triangulated geometries written in C++ and interfaced with MATLAB, Submitted to Journal. 
-<!-- , [Engineering with Computers](https://doi.org/10.1007/s00366-020-01262-x), 2021 (Published Online) -->
+*  Quanbing Luo; Hua Li, A mesh generator for two-dimensional triangulated geometries written in C++ and interfaced with MATLAB, [Engineering Computations](https://doi.org/10.1108/ec-06-2025-0695), 2026 (Published Online)  <!--   -->
 
 ---
 
